@@ -5,7 +5,6 @@ import "../global.css";
 
 export default function Settings() {
   const router = useRouter();
-  //const {tasks, toggleTask, deleteTask} = useTasks();
   return (
     <SafeAreaView className="flex-1 bg-blue-200  p-4">
       <Text className="text-4xl font-bold mb-4 text-center">Settings</Text>
@@ -15,12 +14,6 @@ export default function Settings() {
         <Text className ="text-center text-lg text-gray-700">Some app settings will be in this page</Text>
       
       </ScrollView>
-      <Pressable
-          onPress={() => router.push("/")}
-          className="mt-6 bg-blue-500 px-4 py-2 rounded"
-          >
-            <Text className="text-white text-center">back</Text>
-        </Pressable>
     </View>
     </SafeAreaView>
   );
