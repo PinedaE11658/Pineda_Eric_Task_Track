@@ -17,6 +17,7 @@ export default function Layout() {
       <Tabs.Screen name="index" options={{ title: "Home" }} />
       <Tabs.Screen name="created_tasks" options={{ title: "Tasks" }} />
       <Tabs.Screen name="settings" options={{ title: "Settings" }} />
+      <Tabs.Screen name="add_tasks" options={{ href: null}} />
     </Tabs>
   );
 }
