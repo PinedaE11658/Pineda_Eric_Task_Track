@@ -1,18 +1,48 @@
-import { View, Text, ScrollView, Pressable} from "react-native";
-import {useRouter} from "expo-router";
+import { View, Text, ScrollView, Pressable, Alert} from "react-native";
+import {useFocusEffect, useRouter} from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useState, useCallback } from "react";
+import { getTasks, deleteTask, init } from "../database/database"
 import "../global.css";
+
+type Task = {
+  id: string;
+  title: string;
+  status: string;
+  priority: string;
+  description: string;
+};
 
 export default function Settings() {
   const router = useRouter();
-   const tasks = [
-    {
-      id: 1,
-      title: "Finish App Assignment",
-      status: "In Progress",
-      priority: "High",
-      dueDate: "Apr 12"
-    }];
+  const [tasks, setTasks] = useState<Task[]>([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      init();
+      const dbTasks = getTasks();
+      setTasks(dbTasks);
+    }, [])
+  );
+  const handleDelete = (task: Task) => {
+    Alert.alert(
+      "Delete Task",
+      "Are you sure you want to delete this task?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            deleteTask(task.id);
+            setTasks(getTasks()); // refresh list
+          },
+        },
+      ]
+    );
+  };
+
+
   return (
     <SafeAreaView className="flex-1 bg-blue-200  p-4">
       <Text className="text-4xl font-bold mb-4 text-center">Tasks</Text>
@@ -25,6 +55,12 @@ export default function Settings() {
                           key={task.id}
                           className="bg-white rounded-lg p-4 mb-3 shadow"
                         >
+                          <Pressable
+                            onPress={() => handleDelete(task)}
+                            className="absolute top-2 right-2 bg-red-500 w-6 h-6 rounded-full items-center justify-center"
+                          >
+                            <Text className="text-white text-sm font-bold">−</Text>
+                          </Pressable>
                           <Text className="text-xl font-bold">{task.title}</Text>
 
                           <Text className="text-gray-700">
@@ -36,7 +72,7 @@ export default function Settings() {
                           </Text>
 
                           <Text className="text-gray-700">
-                            Due: {task.dueDate}
+                            Description: {task.description || "No description provided."}
                           </Text>
                         </View>
                       ))

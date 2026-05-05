@@ -1,7 +1,8 @@
-import { View, Text, ScrollView, Pressable, TextInput, Alert} from "react-native";
+import { View, Text, ScrollView, Pressable, TextInput, Alert, Vibration} from "react-native";
 import {useRouter} from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { addTask, init } from "../database/database"
 import "../global.css";
 
 export default function Settings() {
@@ -10,14 +11,28 @@ const [taskName, setTaskName] = useState("");
 const [taskDescription, setTaskDescription] = useState("");
 const [taskPriority, setTaskPriority] = useState("");
 const [taskStatus, setTaskStatus] = useState("");
+
+useEffect(() => {
+  init();
+}, []);
+
   const handleAddTask = () => {
     if (!taskName.trim()) {
       Alert.alert("Error", "Please enter a task name.");
       return;
     }
-    Alert.alert("Success", "Task added successfully.");
-    setTaskName("");
-    setTaskDescription("");
+    try {
+      addTask({ title: taskName, description: taskDescription, priority: taskPriority || "Medium", status: taskStatus || "Not Started" });
+      Vibration.vibrate(500);
+      Alert.alert("Success", "Task added successfully.");
+      setTaskName("");
+      setTaskDescription("");
+      setTaskPriority("");
+      setTaskStatus("");
+    } catch (error) {
+      console.log("Error adding task:", error);
+      Alert.alert("Error", "Failed to add task.");
+    }
   };
 
   return (

@@ -1,8 +1,12 @@
 import { Tabs } from "expo-router";
 import "../global.css";
 import { Text } from "react-native";
+import { init } from "../database/database"
+
+
 
 export default function Layout() {
+  init();
   return (
     <Tabs
       screenOptions={{
